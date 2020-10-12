@@ -81,7 +81,7 @@ void stage()
 		}
 		//DrawGraph(WIN_WIDTH / 2, 120, obj, true);
 		//DrawGraph(WIN_WIDTH / 2, 768 - 215, obj, true);
-		if (keys[KEY_INPUT_SPACE])
+		if (keys[KEY_INPUT_SPACE] || keys[0x20])
 		{
 			button = !button;
 		}
