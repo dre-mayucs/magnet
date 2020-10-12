@@ -14,6 +14,7 @@ void stage()
 	#pragma region variable
 	int BG = LoadGraph("Resources\\Background\\BG.png");
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
+	int player = LoadGraph("Resources\\chr\\char.png");
 
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
