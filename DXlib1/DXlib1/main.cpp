@@ -23,6 +23,7 @@ void stage()
 	bool  button = 0;
 	int score = 0;
 	int Score = 0;
+	int player_y = 0;
 
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
@@ -41,8 +42,9 @@ void stage()
 
 	while (true)
 	{
-		GetHitKeyStateAll(keys);
+		
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
+		GetHitKeyStateAll(keys);
 		ClearDrawScreen(); //ƒNƒŠƒA
 
 		DrawGraph(0, 0, BG, false);
@@ -85,12 +87,15 @@ void stage()
  		}
 		//DrawGraph(WIN_WIDTH / 2, 120, obj, true);
 		//DrawGraph(WIN_WIDTH / 2, 768 - 215, obj, true);
-		if (keys[KEY_INPUT_SPACE] || keys[0x20])
+		//if (keys[KEY_INPUT_SPACE] || keys[0x20])
+		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
 		{
 			button = !button;
 		}
+		if (button) { player_y = 128; }
+		if (!button) { player_y = 768 - 224; }
 
-		DrawGraph(0, 0, player[button], TRUE);
+		DrawGraph(100, player_y, player[button], TRUE);
 		score += 1;
 		if (score >= 60)
 		{
