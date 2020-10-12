@@ -2,6 +2,7 @@
 
 void stage();
 bool rand_obj();
+bool select_obj();
 
 char keys[256] = { 0 };
 char oldkeys[256] = { 0 };
@@ -25,14 +26,16 @@ void stage()
 
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
-	double obj_pos[obj_adjust];
+	double obj_pos_x[obj_adjust];
+	double obj_pos_y[obj_adjust];
 
 	int rand_adjust = 0;
 
 	for (auto i = 0; i < obj_adjust; i++)
 	{
 		obj_flag[i] = false;
-		obj_pos[i] = WIN_WIDTH;
+		obj_pos_x[i] = WIN_WIDTH;
+		obj_pos_y[i] = 0;
 	}
 	#pragma endregion
 
@@ -66,19 +69,20 @@ void stage()
 			}
 			else
 			{
-				DrawGraph(obj_pos[i], 120, obj, true);
+				/*obj_pos_y[i] = select_obj();*/
+				DrawGraph(obj_pos_x[i], select_obj(), obj, true);
 
-				if (obj_pos[i] < -96)
+				if (obj_pos_x[i] < -96)
 				{
 					obj_flag[i] = false;
-					obj_pos[i] = WIN_WIDTH;
+					obj_pos_x[i] = WIN_WIDTH;
 				}
 				else
 				{
-					obj_pos[i] -= 10;
+					obj_pos_x[i] -= 10;
 				}
 			}
-		}
+ 		}
 		//DrawGraph(WIN_WIDTH / 2, 120, obj, true);
 		//DrawGraph(WIN_WIDTH / 2, 768 - 215, obj, true);
 		if (keys[KEY_INPUT_SPACE] || keys[0x20])
@@ -106,7 +110,29 @@ bool rand_obj()
 {
 	_r_flag = false;
 	int cache = rand() % 10000;
+	
 	if (cache < 10) { _r_flag = true; }
 
 	return _r_flag;
+}
+int ret_cache;
+bool select_obj()
+{
+	int cache = rand() % 30;
+	int ret_cache;
+
+	switch (cache / 10)
+	{
+		case 0:
+			ret_cache = 120;
+			break;
+		case 1: 
+			ret_cache = (762 - 215) / 2;
+			break;
+		case 2:
+			ret_cache = 762 - 215;
+			break;
+	}
+
+	return ret_cache;
 }
