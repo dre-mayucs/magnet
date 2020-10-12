@@ -14,7 +14,11 @@ void stage()
 	#pragma region variable
 	int BG = LoadGraph("Resources\\Background\\BG.png");
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
-	int player = LoadGraph("Resources\\chr\\char.png");
+	int player[2];
+	LoadDivGraph("Resources\\chr\\char.png", 2, 2, 1, 96, 96,player);
+	int  button = 0;
+	int score = 0;
+	int Score = 0;
 
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
@@ -68,12 +72,26 @@ void stage()
 				}
 				else
 				{
-					obj_pos[i] -= 20;
+					obj_pos[i] -= 10;
 				}
 			}
 		}
 		//DrawGraph(WIN_WIDTH / 2, 120, obj, true);
 		//DrawGraph(WIN_WIDTH / 2, 768 - 215, obj, true);
+		if (keys[KEY_INPUT_SPACE] && !(oldkeys[KEY_INPUT_SPACE]))
+		{
+			if (button == 0)  button = 1;
+			if (button == 1)  button = 0;
+		}
+
+		DrawGraph(0, 0, player[button], TRUE);
+		score += 1;
+		if (score >= 60)
+		{
+			Score += 100 ;
+			score = 0;
+		}
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Score);
 
 		ScreenFlip();
 		WaitTimer(20);
@@ -86,7 +104,7 @@ bool rand_obj()
 {
 	_r_flag = false;
 	int cache = rand() % 10000;
-	if (cache < 250) { _r_flag = true; }
+	if (cache < 10) { _r_flag = true; }
 
 	return _r_flag;
 }
