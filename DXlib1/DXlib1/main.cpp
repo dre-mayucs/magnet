@@ -36,6 +36,7 @@ void stage()
 	bool obj_flag[obj_adjust];
 	double obj_pos_x[obj_adjust];
 	double obj_pos_y[obj_adjust];
+	double speed = 10;
 
 	int rand_adjust = 0;
 
@@ -84,7 +85,7 @@ void stage()
 				}
 				else
 				{
-					obj_pos_x[i] -= 10;
+					obj_pos_x[i] -= speed;
 				}
 			}
  		}
@@ -148,11 +149,18 @@ void stage()
 
 		DrawGraph(player_x, player_y, player[button], TRUE);
 		score += 1;
-		if (score >= 60)
+		
+			Score += 3 ;
+
+		if (score  <= 10800)
 		{
-			Score += 100 ;
-			score = 0;
+			if (score % 720 == 0)
+			{
+				speed += 2;
+			}
+
 		}
+		SetFontSize( 50);
 		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Score);
 
 		ScreenFlip();
@@ -165,7 +173,7 @@ bool _r_flag;
 bool rand_obj()
 {
 	_r_flag = false;
-	int cache = rand() % 2000;
+	int cache = rand() % 1000;
 	
 	if (cache < 10) { _r_flag = true; }
 
