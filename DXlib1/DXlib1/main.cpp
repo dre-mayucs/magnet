@@ -3,6 +3,9 @@
 void stage();
 bool rand_obj();
 
+char keys[256] = { 0 };
+char oldkeys[256] = { 0 };
+
 void start()
 {
 	srand(time(NULL));
@@ -16,7 +19,7 @@ void stage()
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
 	int player[2];
 	LoadDivGraph("Resources\\chr\\char.png", 2, 2, 1, 96, 96,player);
-	int  button = 0;
+	bool  button = 0;
 	int score = 0;
 	int Score = 0;
 
@@ -78,10 +81,9 @@ void stage()
 		}
 		//DrawGraph(WIN_WIDTH / 2, 120, obj, true);
 		//DrawGraph(WIN_WIDTH / 2, 768 - 215, obj, true);
-		if (keys[KEY_INPUT_SPACE] && !(oldkeys[KEY_INPUT_SPACE]))
+		if (keys[KEY_INPUT_SPACE])
 		{
-			if (button == 0)  button = 1;
-			if (button == 1)  button = 0;
+			button = !button;
 		}
 
 		DrawGraph(0, 0, player[button], TRUE);
