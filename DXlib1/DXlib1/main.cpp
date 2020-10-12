@@ -2,7 +2,7 @@
 
 void stage();
 bool rand_obj();
-bool select_obj();
+double select_obj();
 
 char keys[256] = { 0 };
 char oldkeys[256] = { 0 };
@@ -66,11 +66,11 @@ void stage()
 			if (obj_flag[i] == false)
 			{
 				obj_flag[i] = rand_obj();
+				obj_pos_y[i] = select_obj();
 			}
 			else
 			{
-				/*obj_pos_y[i] = select_obj();*/
-				DrawGraph(obj_pos_x[i], select_obj(), obj, true);
+				DrawGraph(obj_pos_x[i], obj_pos_y[i], obj, true);
 
 				if (obj_pos_x[i] < -96)
 				{
@@ -109,30 +109,28 @@ bool _r_flag;
 bool rand_obj()
 {
 	_r_flag = false;
-	int cache = rand() % 10000;
+	int cache = rand() % 2000;
 	
 	if (cache < 10) { _r_flag = true; }
 
 	return _r_flag;
 }
-int ret_cache;
-bool select_obj()
+int ret_cache = 0;
+double select_obj()
 {
-	int cache = rand() % 30;
+	int cache = rand() % 300;
 	int ret_cache;
 
-	switch (cache / 10)
+	switch (cache / 100)
 	{
 		case 0:
-			ret_cache = 120;
+			return 120;
 			break;
 		case 1: 
-			ret_cache = (762 - 215) / 2;
+			return (762 - (245 / 2)) / 2;
 			break;
 		case 2:
-			ret_cache = 762 - 215;
+			return 762 - 215;
 			break;
 	}
-
-	return ret_cache;
 }
