@@ -1,7 +1,7 @@
 #pragma once
 #include "DxLib.h"
 #include "win_config.h"
-#include "key.h"
+#include "collision.h"
 
 #include <ctime>
 #include <cstdlib>
