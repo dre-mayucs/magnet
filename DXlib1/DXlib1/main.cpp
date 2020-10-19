@@ -30,7 +30,7 @@ void op()
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1) { break; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { return; }
 	}
 }
 
@@ -54,7 +54,7 @@ void end()
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1) { break; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { return; }
 	}
 }
 
@@ -70,6 +70,8 @@ void stage()
 	//sound effects
 	int click_sound = LoadSoundMem("Resources\\sounds\\click_sound_effect.ogg");
 	int change_sound = LoadSoundMem("Resources\\sounds\\change_sound_effect.ogg");
+	ChangeVolumeSoundMem(VOLUME, click_sound);
+	ChangeVolumeSoundMem(VOLUME, change_sound);
 
 	//player
 	bool button = 0;
@@ -252,13 +254,13 @@ void stage()
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1) { break; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { return; }
 	}
 }
 
 bool rand_obj()
 {
-	int cache = rand() % 1000;
+	int cache = rand() % PROBABILITY;
 	
 	if (cache < 10) { return true; }
 	else { return false; }
@@ -266,9 +268,9 @@ bool rand_obj()
 
 double select_obj()
 {
-	int cache = rand() % 300;
+	int cache = rand() % 3000;
 
-	switch (cache / 100)
+	switch (cache / 1000)
 	{
 		case 0:
 			return (double)120;
