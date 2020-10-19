@@ -2,10 +2,20 @@
 #include "DxLib.h"
 #include "win_config.h"
 #include "collision.h"
-
+#include "key.h"
+#include "using_conponents.h"
 #include <ctime>
 #include <cstdlib>
 
+void op();
+void end();
+void stage();
+void start();
+
+//Grobal class
+collision Collision;
+
+//initialize main system
 int initialize_component()
 {
 	// ウィンドウモード
@@ -20,11 +30,7 @@ int initialize_component()
 	SetDrawScreen(DX_SCREEN_BACK);
 }
 
-void op();
-void end();
-void stage();
-void start();
-
+//main
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
 	initialize_component();

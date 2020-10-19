@@ -1,16 +1,7 @@
 #include "Initialize_component.h"
 
-#define TOP_POS (double)128 - 16
-#define UNDER_POS (double)768 - 207
-
 bool rand_obj();
 double select_obj();
-
-char keys[256] = { 0 };
-char oldkeys[256] = { 0 };
-
-//Grobal class
-collision Collision;
 
 void start()
 {
@@ -27,6 +18,8 @@ void op()
 	{
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
 		GetHitKeyStateAll(keys);
+		bool click = keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE];
+
 		ClearDrawScreen(); //クリア
 
 		DrawGraph(0, 0, start_image, false);
@@ -49,10 +42,12 @@ void end()
 	{
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
 		GetHitKeyStateAll(keys);
+		bool click = keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE];
+
 		ClearDrawScreen(); //クリア
 
 		DrawGraph(0, 0, game_over_image, false);
-		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
+		if (click)
 		{
 			stage();
 		}
@@ -66,57 +61,75 @@ void end()
 void stage()
 {
 	#pragma region variable
+	//images
 	int player[8];
 	int BG = LoadGraph("Resources\\Background\\BG_latest.png");
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
 	LoadDivGraph("Resources\\chr\\char.png", 8, 8, 1, 96, 96,player);
 
+	//sound effects
+	int click_sound = LoadSoundMem("Resources\\sounds\\click_sound_effect.ogg");
+	int change_sound = LoadSoundMem("Resources\\sounds\\change_sound_effect.ogg");
+
+	//player
 	bool button = 0;
 	int speed_adjust = 0;
 	int Display_Score = 0;
 	int player_x = 100;
 	int player_y = WIN_HEIGHT / 2;
-
 	int animation_frame = 0;
 
+	//object
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
 	double obj_pos_x[obj_adjust];
 	double obj_pos_y[obj_adjust];
 	double speed = 10;
 
-	int rand_adjust = 0;
-
+	//initialization(object variables)
 	for (auto i = 0; i < obj_adjust; i++)
 	{
 		obj_flag[i] = false;
 		obj_pos_x[i] = WIN_WIDTH;
 		obj_pos_y[i] = 0;
 	}
-	#pragma endregion
 
 	#pragma region adjust_var
+	//random adjustment
+	int rand_adjust = 0;
+
+	//player adjustment
 	short player_speed_adjust = 0;
 	short adjust_count = 0;
-	#pragma endregion
+	#pragma endregion //adjust_var
+	#pragma endregion //variables
 
 	while (true)
 	{
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
+		//new flame keys
 		GetHitKeyStateAll(keys);
+		bool click = keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE];
+
 		ClearDrawScreen(); //クリア
 
 		DrawGraph(0, 0, BG, false);
 		for (auto i = 0; i < obj_adjust; i++)
 		{
+			//player collision variable
+			bool player_collision = obj_flag[i] == true && 
+				Collision.box_Fanc
+				(
+					player_x, player_x + (double)64, player_y, player_y + (double)64,
+					obj_pos_x[i] + 16, obj_pos_x[i] + (double)96 - 16, obj_pos_y[i] + 16, obj_pos_y[i] + (double)96 - 16
+				);
+
 			if (obj_flag[i] == false)
 			{
 				obj_flag[i] = rand_obj();
 				obj_pos_y[i] = select_obj();
 			}
-			else if (obj_flag[i] == true && Collision.box_Fanc(
-					player_x, player_x + (double)64, player_y, player_y + (double)64,
-					obj_pos_x[i] + 16, obj_pos_x[i] + (double)96 - 16, obj_pos_y[i] + 16, obj_pos_y[i] + (double)96 - 16))
+			else if (player_collision)
 			{
 				end();
 			}
@@ -135,17 +148,20 @@ void stage()
 				}
 			}
  		}
-		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
+		if (click)
 		{
-			adjust_count = 0;
-			animation_frame = 1;
+			adjust_count = INIT_COUNT;
+			animation_frame = MIN_FRAME + 1;
 			player_speed_adjust = 5;
 			button = !button;
+
+			PlaySoundMem(change_sound, DX_PLAYTYPE_BACK);
+			se_play_judge = false;
 		}
 
 		if (button == true) 
 		{
-			if (animation_frame != 0)
+			if (animation_frame != MIN_FRAME)
 			{
 				animation_frame++;
 			}
@@ -167,15 +183,20 @@ void stage()
 				}
 				else 
 				{ 
-					adjust_count = 0;
-					player_speed_adjust = 1;
+					adjust_count = INIT_COUNT;
+					player_speed_adjust = SPEED_ADJUST;
+					if (se_play_judge == false)
+					{
+						PlaySoundMem(click_sound, DX_PLAYTYPE_BACK);
+						se_play_judge = true;
+					}
 					break;
 				}
 			}
 		}
 		if (button == false) 
 		{
-			if (animation_frame != 0)
+			if (animation_frame != MIN_FRAME)
 			{
 				animation_frame++;
 			}
@@ -197,28 +218,34 @@ void stage()
 				}
 				else
 				{
-					adjust_count = 0;
-					player_speed_adjust = 1;
+					adjust_count = INIT_COUNT;
+					player_speed_adjust = SPEED_ADJUST;
+					if (se_play_judge == false)
+					{
+						PlaySoundMem(click_sound, DX_PLAYTYPE_BACK);
+						se_play_judge = true;
+					}
 					break;
 				}
 			}
 		}
 
-		if (animation_frame == 7)
+		if (animation_frame == MAX_FRAME)
 		{
-			animation_frame = 0;
+			animation_frame = MIN_FRAME;
 		}
+		//draw player
 		DrawGraph(player_x, player_y, player[animation_frame], TRUE);
-		speed_adjust += 1;
-		Display_Score += 3;
 
-		if (speed_adjust  <= 10800)
+		speed_adjust += SPEED_ADJUST;
+		Display_Score += SCORE_COUNT_SECOND;
+
+		if (speed_adjust <= 10800)
 		{
 			if (speed_adjust % 720 == 0)
 			{
 				speed += 2;
 			}
-
 		}
 		SetFontSize( 50);
 		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Display_Score);
