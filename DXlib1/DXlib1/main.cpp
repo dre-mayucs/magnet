@@ -1,9 +1,8 @@
 #include "Initialize_component.h"
 
-#define TOP_POS (double)128
-#define UNDER_POS (double)768 - 190
+#define TOP_POS (double)128 - 16
+#define UNDER_POS (double)768 - 207
 
-void stage();
 bool rand_obj();
 double select_obj();
 
@@ -16,21 +15,69 @@ collision Collision;
 void start()
 {
 	srand(time(NULL));
+	op();
 	stage();
+}
+
+void op()
+{
+	int start_image = LoadGraph("Resources\\Background\\start.png");
+
+	while (true)
+	{
+		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
+		GetHitKeyStateAll(keys);
+		ClearDrawScreen(); //クリア
+
+		DrawGraph(0, 0, start_image, false);
+		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
+		{
+			break;
+		}
+
+		ScreenFlip();
+		WaitTimer(20);
+		if (ProcessMessage() == -1) { break; }
+	}
+}
+
+void end()
+{
+	int game_over_image = LoadGraph("Resources\\Background\\over.png");
+
+	while (true)
+	{
+		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
+		GetHitKeyStateAll(keys);
+		ClearDrawScreen(); //クリア
+
+		DrawGraph(0, 0, game_over_image, false);
+		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
+		{
+			stage();
+		}
+
+		ScreenFlip();
+		WaitTimer(20);
+		if (ProcessMessage() == -1) { break; }
+	}
 }
 
 void stage()
 {
 	#pragma region variable
-	int BG = LoadGraph("Resources\\Background\\BG.png");
+	int player[8];
+	int BG = LoadGraph("Resources\\Background\\BG_latest.png");
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
-	int player[2];
-	LoadDivGraph("Resources\\chr\\char2.png", 2, 2, 1, 64, 64,player);
+	LoadDivGraph("Resources\\chr\\char.png", 8, 8, 1, 96, 96,player);
+
 	bool button = 0;
 	int speed_adjust = 0;
 	int Display_Score = 0;
 	int player_x = 100;
 	int player_y = WIN_HEIGHT / 2;
+
+	int animation_frame = 0;
 
 	const int obj_adjust = 8;
 	bool obj_flag[obj_adjust];
@@ -55,7 +102,6 @@ void stage()
 
 	while (true)
 	{
-		
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
 		GetHitKeyStateAll(keys);
 		ClearDrawScreen(); //クリア
@@ -70,9 +116,9 @@ void stage()
 			}
 			else if (obj_flag[i] == true && Collision.box_Fanc(
 					player_x, player_x + (double)64, player_y, player_y + (double)64,
-					obj_pos_x[i], obj_pos_x[i] + (double)96, obj_pos_y[i], obj_pos_y[i] + (double)96))
+					obj_pos_x[i] + 16, obj_pos_x[i] + (double)96 - 16, obj_pos_y[i] + 16, obj_pos_y[i] + (double)96 - 16))
 			{
-				return;
+				end();
 			}
 			else
 			{
@@ -92,12 +138,18 @@ void stage()
 		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
 		{
 			adjust_count = 0;
+			animation_frame = 1;
 			player_speed_adjust = 5;
 			button = !button;
 		}
 
 		if (button == true) 
 		{
+			if (animation_frame != 0)
+			{
+				animation_frame++;
+			}
+
 			if (adjust_count >= 20)
 			{
 				player_speed_adjust++;
@@ -123,6 +175,11 @@ void stage()
 		}
 		if (button == false) 
 		{
+			if (animation_frame != 0)
+			{
+				animation_frame++;
+			}
+
 			if (adjust_count >= 20)
 			{
 				player_speed_adjust++;
@@ -147,7 +204,11 @@ void stage()
 			}
 		}
 
-		DrawGraph(player_x, player_y, player[button], TRUE);
+		if (animation_frame == 7)
+		{
+			animation_frame = 0;
+		}
+		DrawGraph(player_x, player_y, player[animation_frame], TRUE);
 		speed_adjust += 1;
 		Display_Score += 3;
 
