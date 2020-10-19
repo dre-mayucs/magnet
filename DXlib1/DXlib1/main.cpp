@@ -34,9 +34,32 @@ void op()
 	}
 }
 
-void end()
+int hight_score = 0;
+void end(int score)
 {
 	int game_over_image = LoadGraph("Resources\\Background\\over.png");
+
+	std::ifstream stream("Resources\\score\\HightScore.score");
+	if (!stream)
+	{
+		hight_score = 0;
+	}
+	else
+	{
+		std::string cache;
+		stream >> cache;
+		hight_score = atoi(cache.c_str());
+	}
+
+	if (hight_score <= score)
+	{
+		std::ofstream o_stream("Resources\\score\\HightScore.score");
+		hight_score = score;
+		if (o_stream)
+		{
+			o_stream << std::to_string(score);
+		}
+	}
 
 	while (true)
 	{
@@ -47,6 +70,8 @@ void end()
 		ClearDrawScreen(); //ƒNƒŠƒA
 
 		DrawGraph(0, 0, game_over_image, false);
+		DrawFormatString(600, 365, WHITE, "%d", score);
+		DrawFormatString(600, 465, WHITE, "%d", hight_score);
 		if (click)
 		{
 			stage();
@@ -133,7 +158,7 @@ void stage()
 			}
 			else if (player_collision)
 			{
-				end();
+				end(Display_Score);
 			}
 			else
 			{

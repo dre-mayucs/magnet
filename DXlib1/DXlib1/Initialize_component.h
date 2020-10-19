@@ -3,12 +3,16 @@
 #include "win_config.h"
 #include "collision.h"
 #include "key.h"
+#include "color.h"
 #include "using_conponents.h"
 #include <ctime>
 #include <cstdlib>
+#include <string>
+#include <fstream>
+#include <sstream>
 
 void op();
-void end();
+void end(int score);
 void stage();
 void start();
 
