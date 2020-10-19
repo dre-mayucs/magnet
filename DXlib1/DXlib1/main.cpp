@@ -106,8 +106,8 @@ void stage()
 
 	while (true)
 	{
+		//initialize key content
 		for (auto i = 0; i < 256; i++) { oldkeys[i] = keys[i]; }
-		//new flame keys
 		GetHitKeyStateAll(keys);
 		bool click = keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE];
 
@@ -168,7 +168,7 @@ void stage()
 
 			if (adjust_count >= 20)
 			{
-				player_speed_adjust++;
+				player_speed_adjust += 2;
 			}
 			else
 			{
@@ -203,7 +203,7 @@ void stage()
 
 			if (adjust_count >= 20)
 			{
-				player_speed_adjust++;
+				player_speed_adjust += 2;
 			}
 			else
 			{
@@ -256,22 +256,17 @@ void stage()
 	}
 }
 
-bool _r_flag;
 bool rand_obj()
 {
-	_r_flag = false;
 	int cache = rand() % 1000;
 	
-	if (cache < 10) { _r_flag = true; }
-
-	return _r_flag;
+	if (cache < 10) { return true; }
+	else { return false; }
 }
 
-int ret_cache = 0;
 double select_obj()
 {
 	int cache = rand() % 300;
-	int ret_cache;
 
 	switch (cache / 100)
 	{
