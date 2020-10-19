@@ -26,9 +26,9 @@ void stage()
 	int obj = LoadGraph("Resources\\Background\\Obj.png");
 	int player[2];
 	LoadDivGraph("Resources\\chr\\char2.png", 2, 2, 1, 64, 64,player);
-	bool  button = 0;
-	int score = 0;
-	int Score = 0;
+	bool button = 0;
+	int speed_adjust = 0;
+	int Display_Score = 0;
 	int player_x = 100;
 	int player_y = WIN_HEIGHT / 2;
 
@@ -148,20 +148,19 @@ void stage()
 		}
 
 		DrawGraph(player_x, player_y, player[button], TRUE);
-		score += 1;
-		
-			Score += 3 ;
+		speed_adjust += 1;
+		Display_Score += 3;
 
-		if (score  <= 10800)
+		if (speed_adjust  <= 10800)
 		{
-			if (score % 720 == 0)
+			if (speed_adjust % 720 == 0)
 			{
 				speed += 2;
 			}
 
 		}
 		SetFontSize( 50);
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Score);
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Display_Score);
 
 		ScreenFlip();
 		WaitTimer(20);
@@ -179,6 +178,7 @@ bool rand_obj()
 
 	return _r_flag;
 }
+
 int ret_cache = 0;
 double select_obj()
 {
