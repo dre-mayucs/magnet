@@ -23,7 +23,7 @@ void op()
 		ClearDrawScreen(); //ÉNÉäÉA
 
 		DrawGraph(0, 0, start_image, false);
-		if (keys[KEY_INPUT_SPACE] && !oldkeys[KEY_INPUT_SPACE])
+		if (click)
 		{
 			break;
 		}
@@ -79,7 +79,7 @@ void end(int score)
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { return; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { break; }
 	}
 }
 
@@ -279,7 +279,7 @@ void stage()
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { return; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { break; }
 	}
 }
 
