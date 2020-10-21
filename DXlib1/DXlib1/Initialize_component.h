@@ -32,6 +32,8 @@ int initialize_component()
 
 	if (DxLib_Init() == -1) { return -1; }
 	SetDrawScreen(DX_SCREEN_BACK);
+
+	srand(time(NULL));
 }
 
 //main

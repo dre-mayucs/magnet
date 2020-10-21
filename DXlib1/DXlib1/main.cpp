@@ -5,9 +5,7 @@ double select_obj();
 
 void start()
 {
-	srand(time(NULL));
 	op();
-	stage();
 }
 
 void op()
@@ -25,7 +23,7 @@ void op()
 		DrawGraph(0, 0, start_image, false);
 		if (click)
 		{
-			break;
+			stage();
 		}
 
 		ScreenFlip();
@@ -279,13 +277,16 @@ void stage()
 
 		ScreenFlip();
 		WaitTimer(20);
-		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) { break; }
+		if (ProcessMessage() == -1 || keys[KEY_INPUT_ESCAPE]) 
+		{
+			break; 
+		}
 	}
 }
 
 bool rand_obj()
 {
-	int cache = rand() % PROBABILITY;
+	int cache = rand() % RAND_PROBABILITY;
 	
 	if (cache < 10) { return true; }
 	else { return false; }
@@ -293,7 +294,7 @@ bool rand_obj()
 
 double select_obj()
 {
-	int cache = rand() % 3000;
+	int cache = rand() % SELECT_PROBABILITY;
 
 	switch (cache / 1000)
 	{
