@@ -39,6 +39,7 @@ int Display_Score = 0;
 void end()
 {
 	int game_over_image = LoadGraph("Resources\\Background\\over.png");
+	int counter = 0;
 
 	std::ifstream stream("Resources\\score\\HightScore.score");
 	if (!stream)
@@ -73,10 +74,12 @@ void end()
 		DrawGraph(0, 0, game_over_image, false);
 		DrawFormatString(600, 365, WHITE, "%d", Display_Score);
 		DrawFormatString(600, 470, WHITE, "%d", hight_score);
-		if (click)
+		if (click && counter > 60)
 		{
+			counter = 0;
 			stage();
 		}
+		counter++;
 
 		ScreenFlip();
 		WaitTimer(20);
