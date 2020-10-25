@@ -6,11 +6,13 @@ double select_obj();
 void start()
 {
 	op();
+	stage();
+	end();
 }
 
 void op()
 {
-	int start_image = LoadGraph("Resources\\Background\\start.png");
+	int start_image = LoadGraph("Resources\\Background\\title.png");
 
 	while (true)
 	{
@@ -23,7 +25,7 @@ void op()
 		DrawGraph(0, 0, start_image, false);
 		if (click)
 		{
-			stage();
+			break;
 		}
 
 		ScreenFlip();
@@ -33,7 +35,8 @@ void op()
 }
 
 int hight_score = 0;
-void end(int score)
+int Display_Score = 0;
+void end()
 {
 	int game_over_image = LoadGraph("Resources\\Background\\over.png");
 
@@ -49,13 +52,13 @@ void end(int score)
 		hight_score = atoi(cache.c_str());
 	}
 
-	if (hight_score <= score)
+	if (hight_score <= Display_Score)
 	{
 		std::ofstream o_stream("Resources\\score\\HightScore.score");
-		hight_score = score;
+		hight_score = Display_Score;
 		if (o_stream)
 		{
-			o_stream << std::to_string(score);
+			o_stream << std::to_string(Display_Score);
 		}
 	}
 
@@ -68,8 +71,8 @@ void end(int score)
 		ClearDrawScreen(); //クリア
 
 		DrawGraph(0, 0, game_over_image, false);
-		DrawFormatString(600, 365, WHITE, "%d", score);
-		DrawFormatString(600, 465, WHITE, "%d", hight_score);
+		DrawFormatString(600, 365, WHITE, "%d", Display_Score);
+		DrawFormatString(600, 470, WHITE, "%d", hight_score);
 		if (click)
 		{
 			stage();
@@ -99,10 +102,10 @@ void stage()
 	//player
 	bool button = 0;
 	int speed_adjust = 0;
-	int Display_Score = 0;
 	int player_x = 100;
 	int player_y = WIN_HEIGHT / 2;
 	int animation_frame = 0;
+	Display_Score = 0;
 
 	//object
 	const int obj_adjust = 8;
@@ -154,9 +157,10 @@ void stage()
 				obj_flag[i] = rand_obj();
 				obj_pos_y[i] = select_obj();
 			}
+			//ゲームオーバー
 			else if (player_collision)
 			{
-				end(Display_Score);
+				return;
 			}
 			else
 			{
@@ -264,7 +268,9 @@ void stage()
 
 		speed_adjust += SPEED_ADJUST;
 		Display_Score += SCORE_COUNT_SECOND;
-
+		///Debung
+		///speed固定用
+		///speed = 2;
 		if (speed_adjust <= 10800)
 		{
 			if (speed_adjust % 720 == 0)
@@ -272,8 +278,9 @@ void stage()
 				speed += 2;
 			}
 		}
-		SetFontSize( 50);
-		DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", Display_Score);
+		SetFontSize(50);
+		ChangeFont("x16y32pxGridGazer");
+		DrawFormatString(0, 0, GetColor(255, 255, 255), "SCORE : %d", Display_Score);
 
 		ScreenFlip();
 		WaitTimer(20);

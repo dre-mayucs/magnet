@@ -12,7 +12,7 @@
 #include <sstream>
 
 void op();
-void end(int score);
+void end();
 void stage();
 void start();
 
